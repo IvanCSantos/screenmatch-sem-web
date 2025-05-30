@@ -3,14 +3,14 @@ package br.com.alura.screenmatch.principal;
 import br.com.alura.screenmatch.model.DadosEpisodio;
 import br.com.alura.screenmatch.model.DadosSerie;
 import br.com.alura.screenmatch.model.DadosTemporada;
+import br.com.alura.screenmatch.model.Episodio;
 import br.com.alura.screenmatch.service.ConsumoAPI;
 import br.com.alura.screenmatch.service.ConverteDados;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.*;
 import java.util.List;
-import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class Principal {
   private Scanner scanner = new Scanner(System.in);
@@ -31,10 +31,7 @@ public class Principal {
     var json = consumoAPI.obterDados(ENDERECO + nomeSerie.replace(" ", "+") + API_KEY);
     DadosSerie dados = conversor.obterDados(json, DadosSerie.class);
 
-    System.out.println(dados);
-
     consultaTemporadas(dados);
-
   }
 
   public void consultaTemporadas(DadosSerie dados) {
@@ -48,19 +45,47 @@ public class Principal {
       temporadas.add(temporada);
     }
 
+    System.out.println("Temporadas:");
     temporadas.forEach(System.out::println);
+    consultaEpisodios(temporadas);
+  }
 
-// Forma tradicional de iteração
-//    for (int i = 0; i < dados.totalTemporadas(); i++) {
-//      List<DadosEpisodio> episodiosTemporada = temporadas.get(i).episodios();
-//
-//      for ( int j = 0; j < episodiosTemporada.size(); j ++) {
-//        System.out.println(episodiosTemporada.get(j).titulo());
-//      }
-//    }
+  public void consultaEpisodios(List<DadosTemporada> dados) {
+    System.out.println("Episódios:");
+
+    // Forma tradicional de iteração
+    //    for (int i = 0; i < dados.totalTemporadas(); i++) {
+    //      List<DadosEpisodio> episodiosTemporada = temporadas.get(i).episodios();
+    //
+    //      for ( int j = 0; j < episodiosTemporada.size(); j ++) {
+    //        System.out.println(episodiosTemporada.get(j).titulo());
+    //      }
+    //    }
 
     // Forma moderna de iteracao, utilizando lambda (paradigma funcional, pois o forEach recebe uma função)
-    temporadas.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
+    dados.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
+
+    List<DadosEpisodio> dadosEpisodios = dados.stream()
+            .flatMap(t -> t.episodios().stream())
+            .collect(Collectors.toList());
+
+    List<Episodio> episodios = dados.stream()
+            .flatMap(t -> t.episodios().stream()
+                      .map(e -> new Episodio(t.temporada(), e))
+            ).collect(Collectors.toList());
+
+    melhoresEpisodios(episodios, 5);
+  }
+
+  public void melhoresEpisodios(List<Episodio> dadosEpisodios, int limit) {
+    dadosEpisodios.stream()
+            .sorted(Comparator.comparing(Episodio::getAvaliacao).reversed())
+            .limit(limit)
+            .forEach(System.out::println);
+  }
+
+  public void testes() {
+
 
     // Streams (fluxo de dados, trabalha com operacoes intermediarias - que geram novos streams, e finaliza com uma operacao fim)
     // Lambda: n -> expressao (funcao anonima)
@@ -72,5 +97,23 @@ public class Principal {
             .filter(n -> n.startsWith("I"))
             .map(n -> n.toUpperCase())
             .forEach(System.out::println);
+
+   List<Integer> numeros = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8,9);
+   List<Integer> pares = numeros.stream()
+           .filter(n -> n % 2 == 0)
+           .collect(Collectors.toList());
+    System.out.println(pares);
+
+   // Declarando array da forma mais básica
+   int[] numeros2 = new int[5];
+   numeros2[0] = 1;
+   numeros2[1] = 2;
+
+   // Declarando array e já inicializando
+   Integer[] numerosDeOutroJeito = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+   // numerosDeOutroJeito.forEach(System.out::println); // Não funciona
+   //System.out.println(numerosDeOutroJeito);
+    Arrays.stream(numerosDeOutroJeito).forEach(System.out::println); // Mas pode ser usado assim com Arrays.stream()
+
   }
 }
