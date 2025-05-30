@@ -101,39 +101,4 @@ public class Principal {
             .collect(Collectors.toList());
     return melhores;
   }
-
-
-
-  public void testes() {
-
-
-    // Streams (fluxo de dados, trabalha com operacoes intermediarias - que geram novos streams, e finaliza com uma operacao fim)
-    // Lambda: n -> expressao (funcao anonima)
-    // method reference :: (quando a função recebe um parametro e opera apenas nesse parametro)
-    List<String> nomes = Arrays.asList("Ivan", "Elaine", "Daniel", "Pamela", "Rodrigo");
-    nomes.stream()
-            .sorted()
-            .limit(4)
-            .filter(n -> n.startsWith("I"))
-            .map(n -> n.toUpperCase())
-            .forEach(System.out::println);
-
-   List<Integer> numeros = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8,9);
-   List<Integer> pares = numeros.stream()
-           .filter(n -> n % 2 == 0)
-           .collect(Collectors.toList());
-    System.out.println(pares);
-
-   // Declarando array da forma mais básica
-   int[] numeros2 = new int[5];
-   numeros2[0] = 1;
-   numeros2[1] = 2;
-
-   // Declarando array e já inicializando
-   Integer[] numerosDeOutroJeito = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-   // numerosDeOutroJeito.forEach(System.out::println); // Não funciona
-   //System.out.println(numerosDeOutroJeito);
-    Arrays.stream(numerosDeOutroJeito).forEach(System.out::println); // Mas pode ser usado assim com Arrays.stream()
-
-  }
 }
