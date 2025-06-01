@@ -42,6 +42,13 @@ public class Principal {
 
     Map<Integer, Double> mediaAvaliacaoTemporadas = calculaMediaAvaliacaoPorTemporada(episodios);
     imprimeMediaAvaliacoesPorTemporada(mediaAvaliacaoTemporadas);
+
+    var estatisticas = getEstatisticas(episodios);
+    System.out.println("\nEstatísticas das avaliações de todos os episódios");
+    System.out.println("Média da avaliação: " + estatisticas.getAverage());
+    System.out.println("Pior avaliação: " + estatisticas.getMin());;
+    System.out.println("Melhor avaliação: " + estatisticas.getMax());
+    System.out.println("Quantidade de médias avaliadas: " + estatisticas.getCount());
   }
 
   public Optional<Episodio> buscaEpisodio(List<Episodio> dados, String nomeEpisodio) {
@@ -73,10 +80,6 @@ public class Principal {
     return dados;
   }
 
-  public float calculaMediaAvaliacao(List<Episodio> episodios) {
-    return 0.0f;
-  }
-
   public Map<Integer, Double> calculaMediaAvaliacaoPorTemporada(List<Episodio> episodios) {
     Map<Integer, Double> avaliacoesPorTemporada = episodios.stream()
             .filter(e -> e.getAvaliacao() > 0.0)
@@ -84,6 +87,13 @@ public class Principal {
                     Collectors.averagingDouble(Episodio::getAvaliacao)));
 
     return avaliacoesPorTemporada;
+  }
+
+  public DoubleSummaryStatistics getEstatisticas(List<Episodio> episodios) {
+    DoubleSummaryStatistics est = episodios.stream()
+            .filter(e -> e.getAvaliacao() > 0.0)
+            .collect(Collectors.summarizingDouble(Episodio::getAvaliacao));
+    return est;
   }
 
   public List<DadosTemporada> consultaTemporadas(DadosSerie dados) {
