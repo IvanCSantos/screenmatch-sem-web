@@ -6,10 +6,6 @@ import br.com.alura.screenmatch.model.DadosTemporada;
 import br.com.alura.screenmatch.model.Episodio;
 import br.com.alura.screenmatch.service.ConsumoAPI;
 import br.com.alura.screenmatch.service.ConverteDados;
-
-import java.awt.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -36,6 +32,22 @@ public class Principal {
     imprimeEpisodios("\nTodos os episódios", episodios);
     imprimeEpisodios("\nMelhores episódios", melhoresEpisodios);
 
+    var nomeEpisodio = exibeMenuBusca();
+    var episodio = buscaEpisodio(episodios, nomeEpisodio);
+    if (episodio.isPresent()) {
+      imprimeEpisodios("\nUm único episódio", episodio.get());
+    } else {
+      System.out.println("Episódio não encontrado");
+    }
+
+  }
+
+  public Optional<Episodio> buscaEpisodio(List<Episodio> dados, String nomeEpisodio) {
+    Optional<Episodio> episodio = dados.stream()
+            .filter(e -> e.getTitulo().toLowerCase().contains(nomeEpisodio.toLowerCase()))
+            .findFirst();
+
+    return episodio;
   }
 
   public String exibeMenu() {
@@ -43,6 +55,13 @@ public class Principal {
     var nomeSerie = scanner.nextLine();
 
     return nomeSerie;
+  }
+
+  public String exibeMenuBusca() {
+    System.out.print("\nInforme o nome do episódio que deseja buscar: ");
+    String nomeEpisodio = scanner.nextLine();
+
+    return nomeEpisodio;
   }
 
   public DadosSerie consultaSerie(String nomeSerie) {
@@ -92,6 +111,11 @@ public class Principal {
   public void imprimeEpisodios(String titulo, List<Episodio> episodios) {
     System.out.println(titulo);
     episodios.stream().forEach(System.out::println);
+  }
+
+  public void imprimeEpisodios(String titulo, Episodio episodio) {
+    System.out.println(titulo);
+    System.out.println(episodio);
   }
 
   public List<Episodio> melhoresEpisodios(List<Episodio> dadosEpisodios, int limit) {
