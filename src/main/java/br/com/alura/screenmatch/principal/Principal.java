@@ -40,6 +40,8 @@ public class Principal {
       System.out.println("Episódio não encontrado");
     }
 
+    Map<Integer, Double> mediaAvaliacaoTemporadas = calculaMediaAvaliacaoPorTemporada(episodios);
+    imprimeMediaAvaliacoesPorTemporada(mediaAvaliacaoTemporadas);
   }
 
   public Optional<Episodio> buscaEpisodio(List<Episodio> dados, String nomeEpisodio) {
@@ -71,6 +73,19 @@ public class Principal {
     return dados;
   }
 
+  public float calculaMediaAvaliacao(List<Episodio> episodios) {
+    return 0.0f;
+  }
+
+  public Map<Integer, Double> calculaMediaAvaliacaoPorTemporada(List<Episodio> episodios) {
+    Map<Integer, Double> avaliacoesPorTemporada = episodios.stream()
+            .filter(e -> e.getAvaliacao() > 0.0)
+            .collect(Collectors.groupingBy(Episodio::getTemporada,
+                    Collectors.averagingDouble(Episodio::getAvaliacao)));
+
+    return avaliacoesPorTemporada;
+  }
+
   public List<DadosTemporada> consultaTemporadas(DadosSerie dados) {
     List<DadosTemporada> temporadas = new ArrayList<>();
     String json;
@@ -90,6 +105,10 @@ public class Principal {
   public void imprimeTemporadas(String titulo, List<DadosTemporada> temporadas) {
     System.out.println(titulo);
     temporadas.forEach(System.out::println);
+  }
+
+  public void imprimeMediaAvaliacoesPorTemporada(Map<Integer, Double> medias) {
+    medias.forEach((t, m) -> System.out.println("Temporada " + t + ": média OMDB " + String.format("%.2f", m)));
   }
 
   public List<DadosEpisodio> consultaEpisodios(List<DadosTemporada> dados) {
