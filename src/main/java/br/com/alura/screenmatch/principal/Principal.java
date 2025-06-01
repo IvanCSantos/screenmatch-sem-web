@@ -43,12 +43,7 @@ public class Principal {
     Map<Integer, Double> mediaAvaliacaoTemporadas = calculaMediaAvaliacaoPorTemporada(episodios);
     imprimeMediaAvaliacoesPorTemporada(mediaAvaliacaoTemporadas);
 
-    var estatisticas = getEstatisticas(episodios);
-    System.out.println("\nEstatísticas das avaliações de todos os episódios");
-    System.out.println("Média da avaliação: " + estatisticas.getAverage());
-    System.out.println("Pior avaliação: " + estatisticas.getMin());;
-    System.out.println("Melhor avaliação: " + estatisticas.getMax());
-    System.out.println("Quantidade de médias avaliadas: " + estatisticas.getCount());
+    imprimeEstatisticas(episodios);
   }
 
   public Optional<Episodio> buscaEpisodio(List<Episodio> dados, String nomeEpisodio) {
@@ -115,6 +110,15 @@ public class Principal {
   public void imprimeTemporadas(String titulo, List<DadosTemporada> temporadas) {
     System.out.println(titulo);
     temporadas.forEach(System.out::println);
+  }
+
+  public void imprimeEstatisticas(List<Episodio> episodios) {
+    var estatisticas = getEstatisticas(episodios);
+    System.out.println("\nEstatísticas das avaliações de todos os episódios");
+    System.out.println("Média da avaliação: " + estatisticas.getAverage());
+    System.out.println("Pior avaliação: " + estatisticas.getMin());;
+    System.out.println("Melhor avaliação: " + estatisticas.getMax());
+    System.out.println("Quantidade de médias avaliadas: " + estatisticas.getCount());
   }
 
   public void imprimeMediaAvaliacoesPorTemporada(Map<Integer, Double> medias) {
